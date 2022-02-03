@@ -1,4 +1,8 @@
-*.ipynb
+test.ipynb
+influxdb_example.ipynb
 .vscode/
 __pycache__/
 *.csv
+*.yaml
+data/
+*.pkl
