@@ -1,6 +1,7 @@
 import os
 import getpass
 import pickle
+import pandas as pd
 from tqdm import tqdm
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
@@ -82,7 +83,7 @@ class DB:
         response = self.client.write_points(points)
 
     def read_db(self, save_df=True, save_final_pkl=True):
-        measurement_list = self.get_measurement_list()
+        database, measurement_list = self.get_measurement_list()
 
         string = 'Please enter the number of the measurement you want to read\n'
         for num, measure in enumerate(measurement_list):
@@ -104,6 +105,9 @@ class DB:
         if save_df:
             os.makedirs('data', exist_ok=True)
             df.to_feather(f'data/{database}_{measurement}.ftr')
+
+        tags = self.client.query(f'SHOW TAG KEYS FROM "{measurement}"')
+        tags = [tag['tagKey'] for tag in tags.get_points()]
 
         if save_final_pkl:
             final = list(df.groupby(tags))
@@ -227,4 +231,4 @@ class DB:
         self.client.switch_database(database)
         measurement_list = self.client.query('SHOW MEASUREMENTS').raw['series'][0]['values']
         measurement_list = [measure[0] for measure in measurement_list]
-        return measurement_list
+        return database, measurement_list
