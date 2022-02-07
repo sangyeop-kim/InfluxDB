@@ -82,12 +82,8 @@ class DB:
         response = self.client.write_points(points)
 
     def read_db(self, save_df=True, save_final_pkl=True):
-        database = input('database :')
-        self.__check_if_including_database(database)
-        self.client.switch_database(database)
+        measurement_list = self.get_measurement_list()
 
-        measurement_list = self.client.get_list_measurements()
-        measurement_list = [measure['name'] for measure in measurement_list]
         string = 'Please enter the number of the measurement you want to read\n'
         for num, measure in enumerate(measurement_list):
             string += f'{num}: {measure}\n'
@@ -231,4 +227,4 @@ class DB:
         self.client.switch_database(database)
         measurement_list = self.client.query('SHOW MEASUREMENTS').raw['series'][0]['values']
         measurement_list = [measure[0] for measure in measurement_list]
-        print(measurement_list)
+        return measurement_list
