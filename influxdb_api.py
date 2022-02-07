@@ -38,12 +38,14 @@ class DB:
         while True:
             string = '\rmeasurement :' + add_string
             measurement = input(string)
-            measurement_list = self.client.query('SHOW MEASUREMENTS').raw['series'][0][
-                'values'
-            ]
-            measurement_list = [measure[0] for measure in measurement_list]
-            add_string = f'{measurement} is duplicated'
-            if measurement not in measurement_list:
+            query = self.client.query('SHOW MEASUREMENTS')
+            if len(query) != 0:
+                measurement_list = query.raw['series'][0]['values']
+                measurement_list = [measure[0] for measure in measurement_list]
+                add_string = f'{measurement} is duplicated'
+                if measurement not in measurement_list:
+                    break
+            else:
                 break
 
         ar = df.values
