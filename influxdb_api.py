@@ -1,6 +1,7 @@
 import os
 import getpass
 import pickle
+from tqdm import tqdm
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
 
